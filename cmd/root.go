@@ -21,9 +21,15 @@ var rootCmd = &cobra.Command{
 		}
 
 		repoBar := progressbar.Default(-1, "Creating repository on Github...")
-		repoUrl, err := github.CreateRepo()
+		repoUrl, err := github.CreateRepo(config.Username, config.Token, config.RepoName)
+		if err != nil {
+			repoBar.Clear()
+			fmt.Printf("\n Failed to create repo: %v\n", err)
+			os.Exit(1)
+		}
+		repoBar.Finish()
 
-
+		err = pain
 
 
 	},
