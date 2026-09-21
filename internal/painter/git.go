@@ -87,10 +87,11 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 
 		if shouldCommit {
 			for commit := 0; commit < commitsPerDay; commit++ {
-				fileName := fmt.Sprintf("paint_%d_%d.txt", i, commit)
+				fileName := "faux-commit-painter-activity.txt"
 				filePath := filepath.Join(tmpDir, fileName)
 
-				err := os.WriteFile(filePath, []byte("commited by faux-commit-painter!"), 0644)
+				content := fmt.Sprintf("Commit %d-%d\n", i, commit)
+				err := os.WriteFile(filePath, []byte(content), 0644)
 				if err != nil {
 					return 0, err
 				}
