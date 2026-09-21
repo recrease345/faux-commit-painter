@@ -27,7 +27,7 @@ func AskConfig() (*Config, error) {
 				Title("Enter your Github email").Placeholder("octocat@example.com").Value(&cfg.Email),
 
 			huh.NewInput().
-				Title("Enter new repository name(it will be private)").Placeholder("my-paint-repo").Value(&cfg.RepoName),
+				Title("Enter new repository name").Placeholder("my-paint-repo").Value(&cfg.RepoName),
 
 			huh.NewNote().
 				Title("How to get your GitHub Personal Access Token").
