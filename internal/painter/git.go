@@ -102,7 +102,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 					return 0, err
 				}
 
-				commitTime := currentData.Add(time.Duration(commit) * time.Hour)
+				commitTime := currentData.Add(time.Duration(commit) * time.Minute)
 
 				_, err = w.Commit(fmt.Sprintf("faux-commit-painter %d-%d", i, commit), &git.CommitOptions{
 					Author: &object.Signature{
