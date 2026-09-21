@@ -44,9 +44,13 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 		return 0, err
 	}
 
-	startDate := time.Now().UTC().AddDate(0, 0, -364)
+	now := time.Now().UTC()
+	startDate := now.AddDate(0, 0, -364)
+
 	offset := int(startDate.Weekday())
-	startDate = startDate.AddDate(0, 0, -offset)
+	if offset != 0 {
+		startDate = startDate.AddDate(0, 0, -offset)
+	}
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 12, 0, 0, 0, time.UTC)
 
 	var ascii []string
@@ -54,7 +58,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 		ascii = strings.Split(strings.TrimSpace(cfg.ASCII), "\n")
 	}
 
-	days := 364
+	days := 371 // 53 week
 
 	bar := progressbar.Default(int64(days), "Painting graph...")
 	totalComitsCounter := 0

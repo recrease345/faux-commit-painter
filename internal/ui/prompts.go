@@ -85,12 +85,17 @@ a repository for commits. Your tokens are not transferred or stored!`),
 			}
 		}
 
+		leftPad := 5
+		padding := strings.Repeat(".", leftPad)
+
 		var builder strings.Builder
 
 		for i, line := range lines {
 			for len(line) < maxLen {
 				line += " "
 			}
+
+			line = padding + line
 
 			for _, ch := range line {
 				if ch == ' ' {
