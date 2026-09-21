@@ -77,9 +77,21 @@ a repository for commits. Your tokens are not transferred or stored!`),
 		asciiStr := fig.String()
 
 		lines := strings.Split(strings.TrimRight(asciiStr, "\n"), "\n")
+
+		maxLen := 0
+		for _, line := range lines {
+			if len(line) > maxLen {
+				maxLen = len(line)
+			}
+		}
+
 		var builder strings.Builder
 
 		for i, line := range lines {
+			for len(line) < maxLen {
+				line += " "
+			}
+
 			for _, ch := range line {
 				if ch == ' ' {
 					builder.WriteString(".")
