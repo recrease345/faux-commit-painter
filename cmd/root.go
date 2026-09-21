@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"gitbrush/internal/github"
+	"gitbrush/internal/painter"
 	"gitbrush/internal/ui"
 	"os"
 
@@ -13,7 +14,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "faux-commit-painter",
 	Short: "Paint your Github contribution graph!",
-	Run:  func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		config, err := ui.AskConfig()
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)
@@ -29,9 +30,14 @@ var rootCmd = &cobra.Command{
 		}
 		repoBar.Finish()
 
-		err = pain
+		commits, err := painter.PaintGraph(config, repoUrl)
+		if err != nil {
+			fmt.Printf("Failed to paint graph: %v\n", err)
+			os.Exit(1)
+		}
 
-
+		fmt.Printf("Done! Succesfule pushed %d commits\n", commits)
+		fmt.Println("Check your GitHub profile in few minutes!")
 	},
 }
 

@@ -27,7 +27,7 @@ func AskConfig() (*Config, error) {
 				Title("Enter your Github email").Placeholder("octocat@example.com").Value(&cfg.Email),
 
 			huh.NewInput().
-				Title("Enter new repository name(it will be private)").Placeholder("my-paint-repo").Value(&cfg.RepoName),
+				Title("Enter new repository name").Placeholder("my-paint-repo").Value(&cfg.RepoName),
 
 			huh.NewNote().
 				Title("How to get your GitHub Personal Access Token").
@@ -77,9 +77,26 @@ a repository for commits. Your tokens are not transferred or stored!`),
 		asciiStr := fig.String()
 
 		lines := strings.Split(strings.TrimRight(asciiStr, "\n"), "\n")
+
+		maxLen := 0
+		for _, line := range lines {
+			if len(line) > maxLen {
+				maxLen = len(line)
+			}
+		}
+
+		leftPad := 5
+		padding := strings.Repeat(".", leftPad)
+
 		var builder strings.Builder
 
 		for i, line := range lines {
+			for len(line) < maxLen {
+				line += " "
+			}
+
+			line = padding + line
+
 			for _, ch := range line {
 				if ch == ' ' {
 					builder.WriteString(".")
