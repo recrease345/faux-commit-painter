@@ -21,10 +21,10 @@ func AskConfig() (*Config, error) {
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
-				Title("Enter your Github username").Placeholder("octocat").Value(&cfg.Username),
+				Title("Enter your Github username").Placeholder("username").Value(&cfg.Username),
 
 			huh.NewInput().
-				Title("Enter your Github email").Placeholder("octocat@example.com").Value(&cfg.Email),
+				Title("Enter your Github email").Placeholder("youremail@example.com").Value(&cfg.Email),
 
 			huh.NewInput().
 				Title("Enter new repository name").Placeholder("my-paint-repo").Value(&cfg.RepoName),

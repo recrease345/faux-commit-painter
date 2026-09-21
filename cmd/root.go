@@ -37,7 +37,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Done! Succesfule pushed %d commits\n", commits)
-		fmt.Println("Check your GitHub profile in few minutes!")
+		fmt.Println("ℹ️ It may take GitHub up to a few hours to fully update your contribution graph after completion")
 	},
 }
 

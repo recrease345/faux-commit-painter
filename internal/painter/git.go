@@ -126,7 +126,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 		bar.Add(1)
 	}
 
-	pushBar := progressbar.Default(-1, "Pushing commit to GitHub...")
+	pushBar := progressbar.Default(-1, "Pushing commit to GitHub. Please, dont close terminal...")
 	err = repo.Push(&git.PushOptions{
 		Auth: auth,
 	})
