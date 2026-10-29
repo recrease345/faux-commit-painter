@@ -32,11 +32,11 @@ func AskConfig() (*Config, error) {
 			huh.NewNote().
 				Title("How to get your GitHub Personal Access Token").
 				Description(`1. Go to: GitHub -> Settings -> Developer settings
-2. Select: personal access tokens -> tokens (classic)
-3. Click: generate new token (classic)
-4. Scopes: check the box next to "repo" (control of private repositories)
-5. Click: generate token
-6. Copy your token (it starts "ghp_")
+2. Select: personal access tokens -> tokens (classic).
+3. Click: generate new token (classic).
+4. Scopes: check the box next to "repo" (control of private repositories).
+5. Click: generate token.
+6. Copy your token (it starts 'ghp_').
 
 It is needed to automatically create 
 a repository for commits. Your tokens are not transferred or stored!`),
