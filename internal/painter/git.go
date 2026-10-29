@@ -72,7 +72,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 		switch cfg.Mode {
 		case "full":
 			shouldCommit = true
-			commitsPerDay = 10
+			commitsPerDay = 5
 		case "chaotic":
 			shouldCommit = rand.IntN(3) == 1
 			commitsPerDay = rand.IntN(7) + 1
@@ -123,18 +123,20 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 			}
 		}
 
+		if (i > 0 && i%28 == 0) || i == days-1 {
+			chunkBar := progressbar.Default(-1, fmt.Sprintf("Syncing to GitHub (day %d/%d)...", i, days))
+			err = repo.Push(&git.PushOptions{
+				Auth: auth,
+			})
+			if err != nil {
+				chunkBar.Clear()
+				return 0, fmt.Errorf("failed to push chunk: %w", err)
+			}
+			chunkBar.Finish()
+		}
+
 		bar.Add(1)
 	}
-
-	pushBar := progressbar.Default(-1, "Pushing commit to GitHub. Please, dont close terminal...")
-	err = repo.Push(&git.PushOptions{
-		Auth: auth,
-	})
-	if err != nil {
-		pushBar.Clear()
-		return 0, fmt.Errorf("failed to push: %w", err)
-	}
-	pushBar.Finish()
 
 	return totalComitsCounter, nil
 }
