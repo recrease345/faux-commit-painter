@@ -16,6 +16,13 @@ var rootCmd = &cobra.Command{
 	Short: "Paint your Github contribution graph!",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("faux-commit-painter %s\n\n", ui.AppVersion)
+
+		if v, err := github.LatestReleaseVersion(); err == nil && v != "" && v != ui.AppVersion {
+			fmt.Printf("Update available: %s (you have %s)\n", v, ui.AppVersion)
+			fmt.Println("  Reinstall with one command:")
+			fmt.Println("  curl -fsSL https://raw.githubusercontent.com/recrease345/faux-commit-painter/main/install.sh | sh\n")
+		}
+
 		config, err := ui.AskConfig()
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)
