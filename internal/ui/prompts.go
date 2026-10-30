@@ -14,10 +14,11 @@ type Config struct {
 	RepoName string
 	Mode     string
 	ASCII    string
+	Version  string
 }
 
 func AskConfig() (*Config, error) {
-	cfg := &Config{}
+	cfg := &Config{Version: AppVersion}
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().

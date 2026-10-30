@@ -42,7 +42,13 @@ case ":$PATH:" in
     ;;
 esac
 
-echo "✓ Installed: $dest/$BIN"
+v=$("$dest/$BIN" --version </dev/null 2>/dev/null | head -1)
+if [ -n "$v" ]; then
+  echo "✓ Installed: $dest/$BIN"
+  echo "   $v"
+else
+  echo "✓ Installed: $dest/$BIN"
+fi
 
 
 if [ "$1" = "run" ]; then

@@ -15,6 +15,7 @@ var rootCmd = &cobra.Command{
 	Use:   "faux-commit-painter",
 	Short: "Paint your Github contribution graph!",
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("faux-commit-painter %s\n\n", ui.AppVersion)
 		config, err := ui.AskConfig()
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)

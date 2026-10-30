@@ -23,10 +23,11 @@ jobs:
       - env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
+          VERSION: ${{ github.ref_name }}
         run: |
           ext=""
           [ "$GOOS" = "windows" ] && ext=".exe"
-          go build -trimpath -ldflags="-s -w" -o "gitbrush-$GOOS-$GOARCH$ext" .
+          go build -trimpath -ldflags="-s -w -X gitbrush/internal/ui.AppVersion=$VERSION" -o "gitbrush-$GOOS-$GOARCH$ext" .
       - uses: softprops/action-gh-release@v2
         with:
           files: gitbrush-*
