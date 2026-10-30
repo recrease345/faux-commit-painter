@@ -1,6 +1,7 @@
 package painter
 
 import (
+	"errors"
 	"fmt"
 	"gitbrush/internal/ui"
 	"math/rand/v2"
@@ -53,18 +54,42 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 	}
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 12, 0, 0, 0, time.UTC)
 
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+
 	var ascii []string
 	if cfg.Mode == "text" {
 		ascii = strings.Split(strings.TrimSpace(cfg.ASCII), "\n")
 	}
 
-	days := 371 // 53 week
+	days := 371 // 53 weeks
 
 	bar := progressbar.Default(int64(days), "Painting graph...")
-	totalComitsCounter := 0
+	totalCommitsCounter := 0
+	pushed := 0
+
+	syncToGitHub := func(label string) error {
+		if totalCommitsCounter == pushed {
+			return nil
+		}
+		chunkBar := progressbar.Default(-1, label)
+		err := repo.Push(&git.PushOptions{
+			Auth: auth,
+		})
+		if err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
+			chunkBar.Clear()
+			return fmt.Errorf("failed to push chunk: %w", err)
+		}
+		chunkBar.Finish()
+		pushed = totalCommitsCounter
+		return nil
+	}
 
 	for i := 0; i < days; i++ {
-		currentData := startDate.AddDate(0, 0, i)
+		currentDate := startDate.AddDate(0, 0, i)
+
+		if currentDate.Format("2006-01-02") > today.Format("2006-01-02") {
+			break
+		}
 
 		shouldCommit := false
 		commitsPerDay := 1
@@ -106,10 +131,15 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 					return 0, err
 				}
 
-				commitTime := currentData.Add(time.Duration(commit) * time.Minute)
+				commitTime := currentDate.Add(time.Duration(commit) * time.Minute)
 
 				_, err = w.Commit(fmt.Sprintf("faux-commit-painter %d-%d", i, commit), &git.CommitOptions{
 					Author: &object.Signature{
+						Name:  cfg.Username,
+						Email: cfg.Email,
+						When:  commitTime,
+					},
+					Committer: &object.Signature{
 						Name:  cfg.Username,
 						Email: cfg.Email,
 						When:  commitTime,
@@ -119,24 +149,23 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 					return 0, fmt.Errorf("failed to commit: %w", err)
 				}
 
-				totalComitsCounter++
+				totalCommitsCounter++
 			}
 		}
 
-		if (i > 0 && i%28 == 0) || i == days-1 {
-			chunkBar := progressbar.Default(-1, fmt.Sprintf("Syncing to GitHub (day %d/%d)...", i, days))
-			err = repo.Push(&git.PushOptions{
-				Auth: auth,
-			})
-			if err != nil {
-				chunkBar.Clear()
-				return 0, fmt.Errorf("failed to push chunk: %w", err)
+		if i > 0 && i%28 == 0 {
+			if err := syncToGitHub(fmt.Sprintf("Syncing to GitHub (day %d/%d)...", i, days)); err != nil {
+				return 0, err
 			}
-			chunkBar.Finish()
 		}
 
 		bar.Add(1)
 	}
 
-	return totalComitsCounter, nil
+	if err := syncToGitHub("Final sync to GitHub..."); err != nil {
+		return 0, err
+	}
+	bar.Finish()
+
+	return totalCommitsCounter, nil
 }
