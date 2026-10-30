@@ -97,7 +97,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 		switch cfg.Mode {
 		case "full":
 			shouldCommit = true
-			commitsPerDay = 5
+			commitsPerDay = 30
 		case "chaotic":
 			shouldCommit = rand.IntN(3) == 1
 			commitsPerDay = rand.IntN(7) + 1
@@ -110,7 +110,7 @@ func PaintGraph(cfg *ui.Config, repoURL string) (int, error) {
 
 				if char != " " && char != "." && char != "_" {
 					shouldCommit = true
-					commitsPerDay = 15
+					commitsPerDay = 30
 				}
 			}
 		}
